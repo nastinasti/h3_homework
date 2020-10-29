@@ -24,17 +24,18 @@ def validate_password(password):
 
 def _validate_symbols(input_str):
     #can I use regular expressions here? with re and match?
-    pass_check_sym = re.match("""^[a-zA-Z0-9]+$""", input_str)
-    return pass_check_sym
+    if not input_str.isalnum():
+        return False
+    return True
 
 def _validate_letters_even(input_str):
-    match_sym = re.findall(r'\D', input_str)
+    match_sym = [sym for sym in input_str if not sym.isdigit()]
     if not len(match_sym) % 2:
         return True
     return False
 
 def _validate_numbers_odd(input_str):
-    match_num = re.findall(r'\d', input_str)
+    match_num = [sym for sym in input_str if sym.isdigit()]
     if len(match_num) % 2:
         return True
     return False
