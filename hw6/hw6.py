@@ -12,17 +12,14 @@
 class IpHandler:
     """Handles a list of IPs, each IP must be a string"""
     def __init__(self, ipList):
-        print("__init__")
         self.__ipList = ipList
 
     @property
     def ipList(self):
-        print("Property")
         return self.__ipList
 
     @ipList.setter
     def ipList(self, newList):
-        print("Check ip list")
         for item in newList:
             if not type(item) == str:
                 return 0
@@ -120,5 +117,3 @@ class ConnHandler:
 login: {self._login}, password: {self._password}"
 
 test_handler = ConnHandler("Linux CO.", "10.10.20.10", "192.168.1.2", "guido_user", "tell_me")
-print(test_handler)
-test_handler.login = "hui"
