@@ -19,5 +19,5 @@ if __name__ == '__main__':
     c1 = Customer("iamguido", "4sure", "Guido", "Van Rossum", "000-112-35-8",
                 "guido@python.org", "09-09-1968")
     i1 = Item("Banana", "Better than ever you tried before", 809.90, ("Yellow", "Fish Yellow"))
-    r1 = Review(c1, i1, 5)
+    r1 = Review(c1, i1, "'Perfectly splendid'")
     print(r1)

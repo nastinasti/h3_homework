@@ -30,7 +30,7 @@ supply.append(supplier2.add_supply(item2, 5))
 
 customer1.create_order(item2, 5)
 print(customer1.orders[0].status)
-customer1.create_review(item1, 5)
+customer1.create_review(item1, "'Perfectly splendid'")
 print(customer1.reviews[0].status)
 
 customer2.create_order(item1, 4)
