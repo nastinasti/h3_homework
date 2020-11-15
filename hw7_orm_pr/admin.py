@@ -32,6 +32,9 @@ class Administrator(User):
 
     def check_review(self, review):
         print(f"Checking reviews {review.id}")
+        if not review.validate_review():
+            print(f"Error. Invalid rate '{review.rate}'. Please input rate from 1 to 5")
+            exit()
         if not review.status == 'Moderation':
             return review
         for rate in self.reviews:

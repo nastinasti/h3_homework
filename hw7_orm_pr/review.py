@@ -9,7 +9,15 @@ class Review:
         self.rate = rate
         self.status = "Moderation"
 
+    def validate_review(self):
+        if str(self.rate).isdigit() and self.rate in range(1,6):
+            return True
+        return False
+
     def __str__(self):
+        if not self.validate_review():
+            print(f"Error. Invalid rate '{self.rate}'. Please input from 1 to 5")
+            exit()
         return f"Customer: {self.customer.first_name} rated {self.item.title} for {self.rate} points"
 
 if __name__ == '__main__':
