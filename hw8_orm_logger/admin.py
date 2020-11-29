@@ -1,6 +1,6 @@
 import uuid
 from user import User
-
+from log_orm import logger
 
 class Administrator(User):
     def __init__(self, username, userpass, email):
@@ -12,6 +12,7 @@ class Administrator(User):
     def update_supply(self, suppliers_list):
         self.supply.clear()
         for supplier in suppliers_list:
+            logger.info(f"Supply {supplier} is updated by administrator")
             self.supply.extend(supplier.supply)
 
     def update_orders(self, customers_list):
@@ -20,26 +21,28 @@ class Administrator(User):
             self.orders.extend(customer.orders)
 
     def check_order(self, order):
-        print(f"Checking orders {order.id}")
+        logger.debug(f"Checking orders {order.id}")
         if not order.status == 'New':
             return order
         for supply in self.supply:
             if supply.item == order.item and supply.amount >= order.amount:
                 order.status = 'Confirmed'
+                logger.info(f"New order: {order}, is confirmed")
                 return order
         order.status = 'On Hold'
         return order
 
     def check_review(self, review):
-        print(f"Checking reviews {review.id}")
+        logger.debug(f"Checking reviews {review.id}")
         if not review.validate_review():
-            print(f"Error. Invalid rate '{review.rate}'. Please input rate from 1 to 5")
+            logger.error(f"Error. Invalid rate '{review.rate}'. Should input rate from 1 to 5")
             exit()
         if not review.status == 'Moderation':
             return review
         for rate in self.reviews:
             if rate.item == review.item:
                 review.status = 'Published'
+                logger.info(f"New review by {review}, is published")
                 return review
         review.status = 'Not confirmed'
         return review
@@ -47,4 +50,5 @@ class Administrator(User):
     def update_reviews(self, reviews):
         self.reviews.clear()
         for customer in reviews:
+            logger.debug("Review is updated")
             self.reviews.extend(customer.reviews)

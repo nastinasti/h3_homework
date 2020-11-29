@@ -3,6 +3,7 @@ import uuid
 from user import User
 from supply import Supply
 from item import Item
+from log_orm import logger
 
 
 class Supplier(User):
@@ -21,11 +22,13 @@ class Supplier(User):
     def add_item(self, title, description, price, colours=tuple()):
         new_item = Item(title, description, price, colours)
         self.supplied_items.append(new_item)
+        logger.debug(f"Item {new_item} is added")
         return new_item
 
     def add_supply(self, item, amount):
         new_supply = Supply(item, self, amount)
         self.supply.append(new_supply)
+        logger.debug(f"Supplier {new_supply} is added")
         return new_supply
 
 if __name__ == '__main__':

@@ -1,6 +1,9 @@
 
 import uuid
 
+from log_orm import logger
+
+
 class Review:
     def __init__(self, customer, item, rate):
         self.id = uuid.uuid4()
@@ -11,12 +14,13 @@ class Review:
 
     def validate_review(self):
         if str(self.rate).isdigit() and self.rate in range(1,6):
+            logger.debug("Review is validated")
             return True
         return False
 
     def __str__(self):
         if not self.validate_review():
-            print(f"Error. Invalid rate '{self.rate}'. Please input from 1 to 5")
+            logger.error(f"Error. Invalid rate '{self.rate}'. Should input from 1 to 5")
             exit()
         return f"Customer: {self.customer.first_name} rated {self.item.title} for {self.rate} points"
 

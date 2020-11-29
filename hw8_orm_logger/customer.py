@@ -7,6 +7,7 @@ import uuid
 from user import User
 from order import  Order
 from review import Review
+from log_orm import logger
 
 class Customer(User):
     def __init__(self, username, userpass, first_name, last_name,
@@ -27,11 +28,13 @@ class Customer(User):
     def create_order(self, item, amount):
         new_order = Order(self, item, amount)
         self.orders.append(new_order)
+        logger.info(f"New order, {new_order} is created by the customer: {self.id}")
         return new_order
 
     def create_review(self, item, rate):
         new_review = Review(self, item, rate)
         self.reviews.append(new_review)
+        logger.info(f"New review by {new_review}, is created by the customer: {self.id}")
         return new_review
 
 

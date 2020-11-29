@@ -2,7 +2,7 @@ from user import User
 from customer import Customer
 from admin import Administrator
 from supplier import Supplier
-
+from log_orm import logger
 from item import Item
 from supply import Supply
 from order import Order
@@ -29,14 +29,14 @@ supply.append(supplier1.add_supply(item1, 10))
 supply.append(supplier2.add_supply(item2, 5))
 
 customer1.create_order(item2, 5)
-print(customer1.orders[0].status)
+logger.info(customer1.orders[0].status)
 customer1.create_review(item1, 10)
-print(customer1.reviews[0].status)
+logger.info(customer1.reviews[0].status)
 
 customer2.create_order(item1, 4)
-print(customer2.orders[0].status)
+logger.info(customer2.orders[0].status)
 customer2.create_review(item1, 4)
-print(customer2.reviews[0].status)
+logger.info(customer2.reviews[0].status)
 
 admin1.update_supply([supplier1, supplier2])
 admin1.update_orders([customer1, customer2])
@@ -44,10 +44,10 @@ admin1.update_reviews([customer1, customer2])
 
 admin1.check_order(customer1.orders[0])
 admin1.check_review(customer1.reviews[0])
-print(customer1.orders[0].status)
-print(customer1.reviews[0].status)
+logger.info(customer1.orders[0].status)
+logger.info(customer1.reviews[0].status)
 
 admin1.check_order(customer2.orders[0])
 admin1.check_review(customer2.reviews[0])
-print(customer2.orders[0].status)
-print(customer2.reviews[0].status)
+logger.info(customer2.orders[0].status)
+logger.info(customer2.reviews[0].status)
