@@ -1,7 +1,7 @@
 from multiprocessing import Process, Pipe
 from time import sleep
 from os import getpid
-from log_orm import logger
+from logs import logger
 
 
 def ponger(receiver, sender, response):
