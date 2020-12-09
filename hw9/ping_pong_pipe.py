@@ -9,18 +9,17 @@ def ponger(receiver, sender, response):
     receiver.recv()
     logger.info(f"Process {getpid()} got message: {response}")
     sleep(2)
-    receiver.send(response)
+    sender.send(response)
 
 
 if __name__ == "__main__":
-  receiver, sender = Pipe()
-  receiver_process = Process(target=ponger, args=(receiver, sender, 'Ping'))
-  sender_process = Process(target=ponger, args=(sender, receiver, 'Pong'))
+  receiver1, sender1 = Pipe()
+  receiver2, sender2 = Pipe()
+  receiver_process = Process(target=ponger, args=(receiver1, sender2, 'Ping'))
+  sender_process = Process(target=ponger, args=(receiver2, sender1, 'Pong'))
 
   sender_process.start()
   receiver_process.start()
-  sender.send('Pong')
+  sender1.send('Ping')
   receiver_process.join()
   sender_process.join()
-  receiver_process.close()
-  sender_process.close()
