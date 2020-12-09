@@ -6,21 +6,20 @@ from logs import logger
 
 def ponger(receiver, sender, response):
   while True:
-    receiver.send(response)
+    receiver.recv()
     logger.info(f"Process {getpid()} got message: {response}")
     sleep(2)
-    sender.send(response)
+    receiver.send(response)
 
 
 if __name__ == "__main__":
   receiver, sender = Pipe()
-  receiver_process = Process(target=ponger, args=(receiver, sender, 'Pong'))
-  sender_process = Process(target=ponger, args=(sender, receiver, 'Ping'))
+  receiver_process = Process(target=ponger, args=(receiver, sender, 'Ping'))
+  sender_process = Process(target=ponger, args=(sender, receiver, 'Pong'))
 
-  receiver_process.start()
   sender_process.start()
-  print(receiver.recv())
-  print(sender.recv())
+  receiver_process.start()
+  sender.send('Pong')
   receiver_process.join()
   sender_process.join()
   receiver_process.close()
