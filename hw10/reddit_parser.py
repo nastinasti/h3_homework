@@ -4,7 +4,7 @@ import json
 
 async def request_data(url):
     # use aiohttp.request (as a context manager) to get data from url
-    async with aiohttp.ClientSession().get(url) as resp:
+    async with aiohttp.request('GET', url) as resp:
         request_text = await resp.text()
         return request_text
     # then return data as str
@@ -12,7 +12,7 @@ async def request_data(url):
 async def get_reddit_top(subreddit):
     # use request_data coroutine to get reddit top
     url_pattern = f'https://www.reddit.com/r/{subreddit}/top.json?sort=top&t=day&limit=5'
-    result = await asyncio.create_task(request_data(url_pattern))
+    result = await request_data(url_pattern)
     response = json.loads(result)
 
     data_children = response.get("data", dict()).get("children", dict())
@@ -37,5 +37,6 @@ async def main():
         "compsci",
         "microbork"
     }
+    res = await asyncio.gather(*(get_reddit_top(reddit) for reddit in reddits))
 
 asyncio.run(main())
