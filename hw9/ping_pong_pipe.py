@@ -8,9 +8,7 @@ def ponger(receiver, sender, response):
   while True:
     receiver.recv()
     logger.info(f"Process {getpid()} got message: {response}")
-    sleep(2)
     sender.send(response)
-
 
 if __name__ == "__main__":
   receiver1, sender1 = Pipe()
