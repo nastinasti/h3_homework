@@ -56,7 +56,7 @@ class Calc_UI(calc_tk.Canvas):
         btn_list = [
             '7', '8', '9', '/', 'C', 'D',
             '4', '5', '6', '*', '(', ')',
-            '1', '2', '3', '-', 'x^2', 'sqrt',
+            '1', '2', '3', '-', '^', '\u221A',
             '0', '00', '.', '+', '%', '=']
         for number in btn_list:
             cmd = partial(self.click, number)
