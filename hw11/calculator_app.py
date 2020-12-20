@@ -94,10 +94,10 @@ class Calc_UI(calc_tk.Canvas):
             self.output_entry.insert(0, 'You are in the Programming mode')
 
     def result(self):
-        check_str = "%+-/*)(.0123456789 "
+        check_str = "%+-/*)(.0123456789√^"
         input_string = str(self.input_entry.get()).replace(' ', '')
         for item in input_string:
-            if item not in check_str or self.calc_manage.result(input_string) == 0:
+            if item not in check_str or self.calc_manage.result(input_string) == False:
                 msg.showerror("Error!", "Value error. Please check your input")
                 raise ValueError
 

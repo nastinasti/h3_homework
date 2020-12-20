@@ -3,8 +3,18 @@ from collections import Counter
 
 class Calculation:
 
+    operations = {
+        '*': lambda a, b: a * b,
+        '/': lambda a, b: a / b if b > 0 else False,
+        '\u221A': lambda a, b: b ** a if a > 0 else False,
+        '^': lambda a, b: pow(a, b),
+        '%': lambda a, b: a * b / 100,
+        '-': lambda a, b: a - b,
+        '+': lambda a, b: a + b
+    }
+
     def result(self, res):
-        signes = ['+', '-', '*', '/', '%', '^', '\u221A']
+        signs = ['+', '-', '*', '/', '%', '^', '\u221A']
         print(f"Equation: {res} = ")
         if not res:
             return '0'
@@ -34,7 +44,7 @@ class Calculation:
                 new_c = Counter(res)
                 brekets_check = int(new_c['('] + new_c[')'])
                 print(f"amount of brackets pairs in the equation is {int(brekets_check) / 2}")
-            for sign in signes:
+            for sign in signs:
                 while sign in res:
                     if brekets_check == 0:
                         print(f"res = {res} for sign {sign}")
@@ -44,7 +54,7 @@ class Calculation:
                         print(f"last match = {last_match}")
                         return ''.join(self.operation(last_match))
         except ValueError and IndexError:
-            return 0
+            return False
 
     def _ch_remove(self, string, index):
         s = list(string)  # конвертируем в список
@@ -52,27 +62,33 @@ class Calculation:
         return "".join(s)
 
     def operation(self, last_match):
+        keys = self.operations.keys()
         while len(last_match) != 1:
             if '\u221A' in last_match:
-                self._sqrt_operation(last_match, self._sqrt, '\u221A')
-            if '*' in last_match:
-                self.check_for_match(last_match, self._mult, '*')
-            if '^' in last_match:
-                self.check_for_match(last_match, self._square, '^')
-            if '/' in last_match:
-                self.check_for_match(last_match, self._div, '/')
-            if '%' in last_match:
-                self.check_for_match(last_match, self._persentage, '%')
-            if '-' in last_match:
-                self.check_for_match(last_match, self._sub, '-')
-            if '+' in last_match:
-                self.check_for_match(last_match, self._sum, '+')
+                self.check_for_match(last_match, self.operations['\u221A'], '\u221A')
+            elif '^' in last_match:
+                self.check_for_match(last_match, self.operations['^'], '^')
+            elif '/' in last_match:
+                self.check_for_match(last_match, self.operations['/'], '/')
+            elif '*' in last_match:
+                self.check_for_match(last_match, self.operations['*'], '*')
+            elif '%' in last_match:
+                self.check_for_match(last_match, self.operations['%'], '%')
+            elif '-' in last_match:
+                self.check_for_match(last_match, self.operations['-'], '-')
+            elif '+' in last_match:
+                self.check_for_match(last_match, self.operations['+'], '+')
         return last_match
 
     def check_for_match(self, match_list, func, sign):
         for item in match_list:
             if item == sign:
-                a = float(match_list[match_list.index(item) - 1])
+
+                if sign == '\u221A':
+                    match_list.insert(match_list.index(item), '0')
+                    a = 0.5
+                else:
+                    a = float(match_list[match_list.index(item) - 1])
                 b = float(match_list[match_list.index(item) + 1])
                 match_list.pop(match_list.index(item) - 1)
                 match_list.pop(match_list.index(item) + 1)
@@ -80,41 +96,8 @@ class Calculation:
                 match_list.insert(match_list.index(item), '{:.2f}'.format(times_result))
                 match_list.pop(match_list.index(item))
 
-    def _sqrt_operation(self, match_list, func, sign):
-        for item in match_list:
-            if item == sign:
-                a = float(match_list[match_list.index(item) + 1])
-                match_list.pop(match_list.index(item) + 1)
-                times_result = func(a)
-                match_list.insert(match_list.index(item), '{:.2f}'.format(times_result))
-                match_list.pop(match_list.index(item))
-                print(match_list)
-
-    def _sum(self, a, b):
-        return a + b
-
-    def _sub(self, a, b):
-        return a - b
-
-    def _mult(self, a, b):
-        return a * b
-
-    def _div(self, a, b):
-        return a / b
-
-    def _persentage(self, a, b):
-        return a * b / 100
-
-    def _square(self, a, b):
-        return a ** b
-
-    def _sqrt(self, a):
-        if a < 0:
-            raise ValueError
-        return a ** 0.5
-
 if __name__ == '__main__':
     calc = Calculation()
-    res = '(\u221A600 - 100)'
+    res = '√50*((-600)/6*10+13*√(900)-3^6)/18+11'
     print(calc.result(res))
 
