@@ -10,30 +10,30 @@ class Calculation:
         for item in res:
             if item == '=' or item == ' ':
                 res = res.replace('=', '')
-        breckets_result = list()
         c = Counter(res)
         brekets_check = c['('] + c[')']
-        print(f"amount of brackets pairs in the equation is {brekets_check/2}")
-        pattern = r"([-+]?\d+\.\d+|\d+)([-+*/])"
-        while (brekets_check)/2 != 0:
-            sub_brackets = re.findall(r'\(([^\(\)]*)\)', res)
+        pattern = r"([-+]?\d+\.\d+|[-+]?\d+)([-+*/])"
+        while int(brekets_check)/2 != 0:
+            sub_brackets = re.findall(r'\(([^()]*)\)', res)
+            # sub_brackets = sub_brackets.group(1)
+            print(f"subbrackets: {sub_brackets}")
             for item in sub_brackets:
+                print(f"item  = {item}")
                 match = re.split(pattern, str(item).replace(' ', ''))
-                match = list(filter(None, match))
-                print(f"match: {match}")
-                print(f"subbreckets are: {sub_brackets}")
-                self.operation(match)
-                breckets_result.append(float(match[0]))
+                if len(match) > 1:
+                    match = list(filter(None, match))
+                    print(f"match: {match}")
+                    self.operation(match)
                 res = self._ch_remove(res, res.find(str(item)) - 1)
                 res = self._ch_remove(res, res.find(str(item)) + len(item))
                 res = res.replace(item, str(match[0]))
                 print(f"im here. res after removing is {res}")
             new_c = Counter(res)
-            brekets_check = new_c['('] + new_c[')']
-            print(f"amount of brackets pairs in the equation is {brekets_check / 2}")
+            brekets_check = int(new_c['('] + new_c[')'])
+            print(f"amount of brackets pairs in the equation is {int(brekets_check) / 2}")
         if brekets_check == 0:
             print(f"res = {res}")
-            print(res)
+            print(f"new equation is: {res}")
             last_match = re.split(pattern, res.replace(' ', ''))
             last_match = list(filter(None, last_match))
             print(f"last match = {last_match}")
@@ -57,28 +57,13 @@ class Calculation:
             if '%' in last_match:
                 self.check_for_match(last_match, self._persentage, '%')
                 print(last_match)
-            for number in last_match:
-                if number == '-':
-                    self.sum_sub_oper(last_match, self._sub, '-')
-                    print(last_match)
-                if number == '+':
-                    self.sum_sub_oper(last_match, self._sum, '+')
-                    print(last_match)
+            if '-' in last_match:
+                self.check_for_match(last_match, self._sub, '-')
+                print(last_match)
+            if '+' in last_match:
+                self.check_for_match(last_match, self._sum, '+')
+                print(last_match)
         return last_match
-
-    def sum_sub_oper(self, match_list, func, sign):
-        result = list()
-        i = 0
-        for item in match_list:
-            a = float(match_list[i])
-            b = float(match_list[i+2])
-            if match_list[i+1] == sign:
-                times_result = func(a, b)
-                result.append('{:.2f}'.format(times_result))
-                match_list.clear()
-                match_list.append('{:.2f}'.format(times_result))
-        print(f"match list : {match_list}")
-
 
     def check_for_match(self, match_list, func, sign):
         for item in match_list:
@@ -112,6 +97,6 @@ class Calculation:
 
 if __name__ == '__main__':
     calc = Calculation()
-    res = '((5.0 + 1) - (9-5)*100) /2 +9*10'
+    res = '(50-(60+32)+6)/6'
     print(calc.result(res))
 
