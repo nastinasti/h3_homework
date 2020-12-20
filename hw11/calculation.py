@@ -13,33 +13,35 @@ class Calculation:
         c = Counter(res)
         brekets_check = c['('] + c[')']
         pattern = r"([-+]?\d+\.\d+|[-+]?\d+)([-+*/])"
-        while int(brekets_check)/2 != 0:
-            sub_brackets = re.findall(r'\(([^()]*)\)', res)
-            # sub_brackets = sub_brackets.group(1)
-            print(f"subbrackets: {sub_brackets}")
-            for item in sub_brackets:
-                print(f"item  = {item}")
-                match = re.split(pattern, str(item).replace(' ', ''))
-                if len(match) > 1:
-                    match = list(filter(None, match))
-                    print(f"match: {match}")
-                    self.operation(match)
-                res = self._ch_remove(res, res.find(str(item)) - 1)
-                res = self._ch_remove(res, res.find(str(item)) + len(item))
-                res = res.replace(item, str(match[0]))
-                print(f"im here. res after removing is {res}")
-            new_c = Counter(res)
-            brekets_check = int(new_c['('] + new_c[')'])
-            print(f"amount of brackets pairs in the equation is {int(brekets_check) / 2}")
-        if brekets_check == 0:
-            print(f"res = {res}")
-            print(f"new equation is: {res}")
-            last_match = re.split(pattern, res.replace(' ', ''))
-            last_match = list(filter(None, last_match))
-            print(f"last match = {last_match}")
-            return (''.join(self.operation(last_match)))
-        # else:
-        #     raise ValueError
+        try:
+            while brekets_check/2 != 0:
+
+                sub_brackets = re.findall(r'\(([^()]*)\)', res)
+                if sub_brackets[0] == '':
+                    return 0
+                for item in sub_brackets:
+                    print(f"item  = {item}")
+                    match = re.split(pattern, str(item).replace(' ', ''))
+                    if len(match) > 1:
+                        match = list(filter(None, match))
+                        print(f"match: {match}")
+                        self.operation(match)
+                    res = self._ch_remove(res, res.find(str(item)) - 1)
+                    res = self._ch_remove(res, res.find(str(item)) + len(item))
+                    res = res.replace(item, str(match[0]))
+                    print(f"im here. res after removing is {res}")
+                new_c = Counter(res)
+                brekets_check = int(new_c['('] + new_c[')'])
+                print(f"amount of brackets pairs in the equation is {int(brekets_check) / 2}")
+            if brekets_check == 0:
+                print(f"res = {res}")
+                print(f"new equation is: {res}")
+                last_match = re.split(pattern, res.replace(' ', ''))
+                last_match = list(filter(None, last_match))
+                print(f"last match = {last_match}")
+                return (''.join(self.operation(last_match)))
+        except ValueError and IndexError:
+            return 0
 
     def _ch_remove(self, string, index):
         s = list(string)  # конвертируем в список
@@ -97,6 +99,6 @@ class Calculation:
 
 if __name__ == '__main__':
     calc = Calculation()
-    res = '(50-(60+32)+6)/6'
+    res = '(50-(60+32)+6-100)/6'
     print(calc.result(res))
 
