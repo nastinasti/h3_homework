@@ -1,22 +1,27 @@
 import tkinter as calc_tk
 from tkinter import messagebox as msg
+from tkinter import *
 from functools import partial
 from calculation import Calculation
 
 
 class Calc_UI(calc_tk.Canvas):
+
     def __init__(self, root):
         self.width = 420
-        self.heigth = 340
+        self.height = 340
 
-        super().__init__(root, width=self.width, height=self.heigth)
+        super().__init__(root, width=self.width, height=self.height)
         self.pack()
         self.set_main_ui()
         self.set_output_field()
         self.set_input_field()
         self.set_calculation_field()
         self.calc_manage = Calculation()
-
+        root.bind('<Return>', self.result)
+        root.bind('<KP_Enter>', self.result)
+        root.bind('<BackSpace>', self._d_the_last)
+        root.bind("<Key>", self.key)
 
     def set_main_ui(self):
         root.title("Duck Calcurator 1.1.0")
@@ -47,6 +52,7 @@ class Calc_UI(calc_tk.Canvas):
                                          highlightbackground="#343434", foreground="#c0c0c0")
         self.input_entry.place(relx=0.5, rely=0, relwidth=1, relheight=1, anchor='n')
 
+
     def set_calculation_field(self):
         calculate = calc_tk.Frame(self.frame, bg='#3e3e3e')
         calculate.place(relx=0.5, rely=0.56, relwidth=1, relheight=0.45, anchor='n')
@@ -70,15 +76,20 @@ class Calc_UI(calc_tk.Canvas):
                 c = 1
                 r += 1
 
-    def click(self, btn):
+    def _d_the_last(self, event):
+        self.input_entry.delete(len(self.input_entry.get()) - 1)
 
+    def key(self, event):
+        self.input_entry.insert(calc_tk.END, str(event.char))
+
+    def click(self, btn):
         if btn == "C":
             self.input_entry.delete(0, calc_tk.END)
             self.output_entry.delete(0, calc_tk.END)
         elif btn == "=":
-            self.result()
+            self.result('<Return>')
         elif btn == "D":
-            self.input_entry.delete(self.input_entry.get()[-2], calc_tk.END)
+            self._d_the_last('<BackSpace>')
         else:
             self.input_entry.insert(calc_tk.END, str(btn))
 
@@ -93,7 +104,7 @@ class Calc_UI(calc_tk.Canvas):
             self.output_entry.delete(0, calc_tk.END)
             self.output_entry.insert(0, 'You are in the Programming mode')
 
-    def result(self):
+    def result(self, event):
         check_str = "%+-/*)(.0123456789√^"
         input_string = str(self.input_entry.get()).replace(' ', '')
         for item in input_string:

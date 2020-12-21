@@ -53,12 +53,12 @@ class Calculation:
                         last_match = list(filter(None, last_match))
                         print(f"last match = {last_match}")
                         return ''.join(self.operation(last_match))
-        except ValueError and IndexError:
+        except (ValueError, IndexError, ZeroDivisionError):
             return False
 
     def _ch_remove(self, string, index):
-        s = list(string)  # конвертируем в список
-        del s[index]  # удаляем элемент с индексом index
+        s = list(string)
+        del s[index]
         return "".join(s)
 
     def operation(self, last_match):
@@ -83,7 +83,6 @@ class Calculation:
     def check_for_match(self, match_list, func, sign):
         for item in match_list:
             if item == sign:
-
                 if sign == '\u221A':
                     match_list.insert(match_list.index(item), '0')
                     a = 0.5
