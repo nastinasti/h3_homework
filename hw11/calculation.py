@@ -18,6 +18,16 @@ class Calculation:
         print(f"Equation: {res} = ")
         if not res:
             return '0'
+        elif res.isdigit():
+            return float(res)
+        check_sign_set = re.split(r"(\u221A?)([-+*/^])([-+*/^]?)(\u221A?)", res)
+        check_sign_set = list(filter(None, check_sign_set))
+        print(f"check_sign_set = {check_sign_set}")
+        for item in check_sign_set:
+            a = check_sign_set.index(item)
+            b = check_sign_set.index(item) + 1
+            if check_sign_set[a] in signs and check_sign_set[a] == check_sign_set[b]:
+                return False
         for item in res:
             if item == '=' or item == ' ':
                 res = res.replace('=', '')
@@ -97,6 +107,6 @@ class Calculation:
 
 if __name__ == '__main__':
     calc = Calculation()
-    res = '√50*((-600)/6*10+13*√(900)-3^6)/18+11'
+    res = '50'#'√50*((-600)/6*10+13*√(900)-3^6)/18+11'
     print(calc.result(res))
 
