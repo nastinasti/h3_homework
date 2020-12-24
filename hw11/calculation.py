@@ -5,7 +5,7 @@ class Calculation:
 
     operations = {
         '*': lambda a, b: a * b,
-        '/': lambda a, b: a / b if b > 0 else False,
+        '/': lambda a, b: a / b if b != 0 else False,
         '\u221A': lambda a, b: b ** a if a > 0 else False,
         '^': lambda a, b: pow(a, b),
         '%': lambda a, b: a * b / 100,
@@ -20,24 +20,20 @@ class Calculation:
             return '0'
         elif res.isdigit():
             return float(res)
-        check_sign_set = re.split(r"(\u221A?)([-+*/^])([-+*/^]?)(\u221A?)", res)
-        check_sign_set = list(filter(None, check_sign_set))
-        print(f"check_sign_set = {check_sign_set}")
-        for item in check_sign_set:
-            a = check_sign_set.index(item)
-            b = check_sign_set.index(item) + 1
-            if check_sign_set[a] in signs and check_sign_set[a] == check_sign_set[b]:
-                return False
+
         for item in res:
             if item == '=' or item == ' ':
                 res = res.replace('=', '')
         c = Counter(res)
         brekets_check = c['('] + c[')']
-        pattern = r"([-+]?\d+\.\d+|[-+]?\d+)(\u221A?)([-+*/^])(\u221A?)"
+        pattern = r"([-+]?)(\u221A)|([-+]?\d+\.\d+|[-+]?\d+)(\u221A?)([-+*/^])(\u221A?)"
+        check = re.findall(r"(\u221A)([-+]?\d+\.\d+|[-+]?\d+)(\u221A)", res.replace(' ', ''))
+        print(check)
         try:
             while brekets_check/2 != 0:
                 sub_brackets = re.findall(r'\(([^()]*)\)', res)
                 if sub_brackets[0] == '':
+                    print(f"subbreckets with [0] {sub_brackets}")
                     return 0
                 for item in sub_brackets:
                     print(f"item  = {item}")
@@ -59,11 +55,15 @@ class Calculation:
                     if brekets_check == 0:
                         print(f"res = {res} for sign {sign}")
                         print(f"new equation is: {res}")
+                        if check:
+                            print(f"check for double sqrt")
+                            return False
                         last_match = re.split(pattern, res.replace(' ', ''))
                         last_match = list(filter(None, last_match))
                         print(f"last match = {last_match}")
                         return ''.join(self.operation(last_match))
         except (ValueError, IndexError, ZeroDivisionError):
+            print("here is an error")
             return False
 
     def _ch_remove(self, string, index):
@@ -101,12 +101,14 @@ class Calculation:
                 b = float(match_list[match_list.index(item) + 1])
                 match_list.pop(match_list.index(item) - 1)
                 match_list.pop(match_list.index(item) + 1)
-                times_result = func(a, b)
-                match_list.insert(match_list.index(item), '{:.2f}'.format(times_result))
+                match_list.insert(match_list.index(item), '{:.2f}'.format(func(a, b)))
                 match_list.pop(match_list.index(item))
+                if match_list[0] == '-':
+                    match_list[1] = str((-1) * float(match_list[1]))
+                    match_list.pop(0)
 
 if __name__ == '__main__':
     calc = Calculation()
-    res = '50'#'√50*((-600)/6*10+13*√(900)-3^6)/18+11'
+    res = '√50   *((-600)/6*10+13*√(900)-3^6)/18+11'#'√50*((-600)/6*10+13*√(900)-3^6)/18+11'
     print(calc.result(res))
 

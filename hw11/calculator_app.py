@@ -46,14 +46,12 @@ class Calc_UI(calc_tk.Canvas):
                                           highlightbackground=self.main_colours[2], foreground=self.main_colours[0])
         self.output_entry.place(relx=0.5, rely=0, relwidth=1, relheight=1, anchor='n')
 
-
     def set_input_field(self):
         input_field = calc_tk.Frame(self.frame, bg=self.main_colours[3])
         input_field.place(relx=0.5, rely=0.405, relwidth=1, relheight=0.15, anchor='n')
         self.input_entry = calc_tk.Entry(input_field, bg=self.main_colours[3], bd=0,
                                          highlightbackground=self.main_colours[3], foreground=self.main_colours[0])
         self.input_entry.place(relx=0.5, rely=0, relwidth=1, relheight=1, anchor='n')
-
 
     def set_calculation_field(self):
         calculate = calc_tk.Frame(self.frame, bg='#3e3e3e')
@@ -69,7 +67,8 @@ class Calc_UI(calc_tk.Canvas):
         for number in btn_list:
             cmd = partial(self.click, number)
             numbers = calc_tk.Button(calculate, text=number, width=3, height=1,
-                                     bg="#484848", bd=0.2, highlightbackground="#484847", foreground=self.main_colours[0],
+                                     bg="#484848", bd=0.2, highlightbackground="#484847",
+                                     foreground=self.main_colours[0],
                                      command=cmd)
             numbers.grid(row=r, column=c, ipadx=8, ipady=2, padx=2, pady=2)
             n += 1
@@ -117,10 +116,9 @@ class Calc_UI(calc_tk.Canvas):
         for item in input_string:
             if item not in check_str or self.calc_manage.result(input_string) == False:
                 msg.showerror("Error!", "Value error. Please check your input")
+                self.output_entry.insert(0, '0')
                 raise ValueError
-
         self.output_entry.insert(0, self.calc_manage.result(input_string))
-
 
 
 root = calc_tk.Tk()
