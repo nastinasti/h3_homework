@@ -99,6 +99,8 @@ class Calculation:
                 else:
                     a = float(match_list[match_list.index(item) - 1])
                 b = float(match_list[match_list.index(item) + 1])
+                if sign == '/' and b == 0:
+                    raise ZeroDivisionError
                 match_list.pop(match_list.index(item) - 1)
                 match_list.pop(match_list.index(item) + 1)
                 match_list.insert(match_list.index(item), '{:.2f}'.format(func(a, b)))
@@ -109,6 +111,6 @@ class Calculation:
 
 if __name__ == '__main__':
     calc = Calculation()
-    res = '√50   *((-600)/6*10+13*√(900)-3^6)/18+11'#'√50*((-600)/6*10+13*√(900)-3^6)/18+11'
+    res = '50/0'#'√50*((-600)/6*10+13*√(900)-3^6)/18+11'
     print(calc.result(res))
 

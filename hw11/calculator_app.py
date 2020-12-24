@@ -115,7 +115,7 @@ class Calc_UI(calc_tk.Canvas):
         input_string = str(self.input_entry.get()).replace(' ', '')
         for item in input_string:
             if item not in check_str or self.calc_manage.result(input_string) == False:
-                msg.showerror("Error!", "Value error. Please check your input")
+                msg.showerror("Error!", "Please check your input")
                 self.output_entry.insert(0, '0')
                 raise ValueError
         self.output_entry.insert(0, self.calc_manage.result(input_string))
