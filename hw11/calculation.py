@@ -1,5 +1,6 @@
 import re
 from collections import Counter
+from logger_calculator import logger
 
 class Calculation:
 
@@ -15,12 +16,11 @@ class Calculation:
 
     def result(self, res):
         signs = ['+', '-', '*', '/', '%', '^', '\u221A']
-        print(f"Equation: {res} = ")
+        logger.info(f"Equation: {res} = ")
         if not res:
             return '0'
         elif res.isdigit():
             return float(res)
-
         for item in res:
             if item == '=' or item == ' ':
                 res = res.replace('=', '')
@@ -28,42 +28,34 @@ class Calculation:
         brekets_check = c['('] + c[')']
         pattern = r"([-+]?)(\u221A)|([-+]?\d+\.\d+|[-+]?\d+)(\u221A?)([-+*/^])(\u221A?)"
         check = re.findall(r"(\u221A)([-+]?\d+\.\d+|[-+]?\d+)(\u221A)", res.replace(' ', ''))
-        print(check)
         try:
             while brekets_check/2 != 0:
                 sub_brackets = re.findall(r'\(([^()]*)\)', res)
                 if sub_brackets[0] == '':
-                    print(f"subbreckets with [0] {sub_brackets}")
+                    logger.info(f"subbreckets with [0] {sub_brackets}")
                     return 0
                 for item in sub_brackets:
-                    print(f"item  = {item}")
                     match = re.split(pattern, str(item).replace(' ', ''))
-                    print(f"match before: {match}")
                     if len(match) > 1:
                         match = list(filter(None, match))
-                        print(f"match after: {match}")
                         self.operation(match)
                     res = self._ch_remove(res, res.find(str(item)) - 1)
                     res = self._ch_remove(res, res.find(str(item)) + len(item))
                     res = res.replace(item, str(match[0]))
-                    print(f"im here. res after removing is {res}")
                 new_c = Counter(res)
                 brekets_check = int(new_c['('] + new_c[')'])
-                print(f"amount of brackets pairs in the equation is {int(brekets_check) / 2}")
             for sign in signs:
                 while sign in res:
                     if brekets_check == 0:
-                        print(f"res = {res} for sign {sign}")
-                        print(f"new equation is: {res}")
+                        logger.info(f"new equation is: {res}")
                         if check:
-                            print(f"check for double sqrt")
                             return False
                         last_match = re.split(pattern, res.replace(' ', ''))
                         last_match = list(filter(None, last_match))
-                        print(f"last match = {last_match}")
+                        logger.info(f"List of the last equation items = {last_match}")
                         return ''.join(self.operation(last_match))
         except (ValueError, IndexError, ZeroDivisionError):
-            print("here is an error")
+            logger.error(f"Input Error of the equation {res}")
             return False
 
     def _ch_remove(self, string, index):
@@ -111,6 +103,6 @@ class Calculation:
 
 if __name__ == '__main__':
     calc = Calculation()
-    res = '50/0'#'√50*((-600)/6*10+13*√(900)-3^6)/18+11'
+    res = '50/5/5'#'√50*((-600)/6*10+13*√(900)-3^6)/18+11'
     print(calc.result(res))
 
