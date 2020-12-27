@@ -1,18 +1,20 @@
 import tkinter as calc_tk
 from tkinter import messagebox as msg
-from tkinter import *
 from functools import partial
 from calculation import Calculation
 
 
 class Calc_UI(calc_tk.Canvas):
 
-    def __init__(self, root):
-        self.width = 420
-        self.height = 340
+    def __init__(self, root, w, h, btn, column_num):
+        self.root = root
+        self.width = w
+        self.height = h
         self.main_colours = ["#c0c0c0", "#1d1d1b", "#2b2b2b", "#343434"]
+        self.btn_list = btn
+        self.column_num = column_num
 
-        super().__init__(root, width=self.width, height=self.height)
+        super().__init__(root, width=w, height=h)
         self.pack()
         self.set_main_ui()
         self.set_output_field()
@@ -26,16 +28,7 @@ class Calc_UI(calc_tk.Canvas):
         root.bind("<Control-q>", self.exit_win)
 
     def set_main_ui(self):
-        root.title("Duck Calcurator 3.1.0")
-        calculator_choices = {'Basic Mode', 'Advanced Mode', 'Programming Mode'}
-        menu_bar = calc_tk.Menu(root, bg=self.main_colours[2], bd=0, foreground=self.main_colours[0])
-        calcmenu = calc_tk.Menu(menu_bar, bg=self.main_colours[0], foreground=self.main_colours[2], tearoff=False)
-        radio_option = calc_tk.StringVar()
-        for choice in calculator_choices:
-            cmd = partial(self.menuBar, choice)
-            calcmenu.add_command(label=choice, command=cmd)
-        menu_bar.add_cascade(label='Mode', menu=calcmenu)
-        root.config(menu=menu_bar)
+        self.root.title("Duck Calcurator 3.1.0")
         self.frame = calc_tk.Frame(self, bg=self.main_colours[1])
         self.frame.place(relx=0.5, rely=0, relwidth=1, relheight=1, anchor='n')
 
@@ -59,12 +52,8 @@ class Calc_UI(calc_tk.Canvas):
         r = 0
         c = 1
         n = 0
-        btn_list = [
-            '7', '8', '9', '/', 'C', 'D',
-            '4', '5', '6', '*', '(', ')',
-            '1', '2', '3', '-', '^', '\u221A',
-            '0', '00', '.', '+', '%', '=']
-        for number in btn_list:
+
+        for number in self.btn_list:
             cmd = partial(self.click, number)
             numbers = calc_tk.Button(calculate, text=number, width=3, height=1,
                                      bg="#484848", bd=0.2, highlightbackground="#484847",
@@ -73,7 +62,7 @@ class Calc_UI(calc_tk.Canvas):
             numbers.grid(row=r, column=c, ipadx=8, ipady=2, padx=2, pady=2)
             n += 1
             c += 1
-            if c > 6:
+            if c > self.column_num:
                 c = 1
                 r += 1
 
@@ -83,8 +72,8 @@ class Calc_UI(calc_tk.Canvas):
     def key(self, event):
         self.input_entry.insert(calc_tk.END, str(event.char))
 
-    def exit_win(slef, event):
-        root.destroy()
+    def exit_win(self, event):
+        self.root.destroy()
 
     def click(self, btn):
         if btn == "C":
@@ -98,17 +87,6 @@ class Calc_UI(calc_tk.Canvas):
         else:
             self.input_entry.insert(calc_tk.END, str(btn))
 
-    def menuBar(self, choice):
-        if str(choice) == 'Basic Mode':
-            self.output_entry.delete(0, calc_tk.END)
-            self.output_entry.insert(0, 'You are in the Basic mode')
-        elif str(choice) == 'Advanced Mode':
-            self.output_entry.delete(0, calc_tk.END)
-            self.output_entry.insert(0, 'You are in the Advanced mode')
-        elif str(choice) == 'Programming Mode':
-            self.output_entry.delete(0, calc_tk.END)
-            self.output_entry.insert(0, 'You are in the Programming mode')
-
     def result(self, event):
         self.output_entry.delete(0, calc_tk.END)
         check_str = "%+-/*)(.0123456789√^"
@@ -120,8 +98,3 @@ class Calc_UI(calc_tk.Canvas):
                 raise ValueError
         self.output_entry.insert(0, self.calc_manage.result(input_string))
 
-
-root = calc_tk.Tk()
-calculator = Calc_UI(root)
-root.resizable(width=False, height=False)
-calculator.mainloop()

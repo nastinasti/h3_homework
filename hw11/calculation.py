@@ -103,6 +103,6 @@ class Calculation:
 
 if __name__ == '__main__':
     calc = Calculation()
-    res = '50/5/5'#'√50*((-600)/6*10+13*√(900)-3^6)/18+11'
+    res = '√50000*√50000'#'√50*((-600)/6*10+13*√(900)-3^6)/18+11'
     print(calc.result(res))
 
