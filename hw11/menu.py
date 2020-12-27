@@ -3,7 +3,7 @@ from tkinter import messagebox as msg
 from functools import partial
 from basic_calc import Basic
 from advance_calc import Advanced
-
+from program_calc import Programming
 
 class Calc_Menu(calc_tk.Canvas):
     def __init__(self, root, w=200, h=100):
@@ -42,7 +42,8 @@ class Calc_Menu(calc_tk.Canvas):
             msg.showinfo("INFO", "You are in the Advanced mode")
             self.advanced_win()
         elif str(choice) == 'Programming Mode':
-            msg.showinfo("INFO", "You are in the Basic mode")
+            msg.showinfo("INFO", "You are in the Programming mode")
+            self.programming_win()
 
     def onCloseOtherFrame(self, otherFrame):
         otherFrame.destroy()
@@ -65,6 +66,13 @@ class Calc_Menu(calc_tk.Canvas):
         root.geometry('+{}+{}'.format(self.calc_window_width(root, 500), self.calc_window_height(root, 340)))
         root.resizable(width=False, height=False)
         advanced.mainloop()
+
+    def programming_win(self):
+        root = calc_tk.Tk()
+        programming = Programming(root)
+        root.geometry('+{}+{}'.format(self.calc_window_width(root, 500), self.calc_window_height(root, 340)))
+        root.resizable(width=False, height=False)
+        programming.mainloop()
 
     def calc_window_width(self, root, width):
         return (root.winfo_screenwidth() // 2) - width // 2
