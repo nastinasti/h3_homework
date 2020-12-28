@@ -43,10 +43,9 @@ class Calculation:
                 res = res.replace('=', '')
         c = Counter(res)
         brekets_check = c['('] + c[')']
-        pattern = r"([-]?\u221A|\u221B|sin|cos|tan|rad|deg|abs|lg|ln|fac)|([-]?\d+\.\d+|[-]?\d+|\d+\.\d+)" \
-                  r"(\u221A?|\u221B?|sin?|cos?|tan?|rad?|deg?|abs?|lg?|ln?|fac?)" \
-                  r"([-+*/^])(\u221A?|\u221B?|sin?|cos?|tan?|rad?|deg?|lg?|ln?|fac?)"
-        check = re.findall(r"(\u221A)([-+]?\d+\.\d+|[-+]?\d+)(\u221A)", res.replace(' ', ''))
+        pattern = r"([-]?\u221A|\u221B)|([-]?\d+\.\d+|[-]?\d+)(\u221A?)([-+*/^])(\u221A?)" #
+        check = re.split(r"(\w+)?([-]?\d+\.\d+|[-]?\d+|\d+\.\d+)", res.replace(' ', ''))
+        logger.info(f"check = {check}")
         try:
             while brekets_check/2 != 0:
                 sub_brackets = re.findall(r'\(([^()]*)\)', res)
@@ -55,6 +54,7 @@ class Calculation:
                     return 0
                 for item in sub_brackets:
                     match = re.split(pattern, str(item).replace(' ', ''))
+                    logger.info(match)
                     if len(match) > 1:
                         match = list(filter(None, match))
                         self.operation(match)
@@ -67,8 +67,6 @@ class Calculation:
                 while sign in res:
                     if brekets_check == 0:
                         logger.info(f"new equation is: {res}")
-                        if check:
-                            return False
                         last_match = re.split(pattern, res.replace(' ', ''))
                         last_match = list(filter(None, last_match))
                         logger.info(f"List of the last equation items = {last_match}")
@@ -87,6 +85,7 @@ class Calculation:
             for sign in self.advanced_signs:
                 if sign in last_match:
                     self.check_for_match(last_match, self.advanced_operations[sign], sign)
+                    logger.info(last_match)
             if '\u221A' in last_match:
                 self.check_for_match(last_match, self.operations['\u221A'], '\u221A')
             elif '^' in last_match:
@@ -127,6 +126,6 @@ class Calculation:
 
 if __name__ == '__main__':
     calc = Calculation()
-    res = 'fac3 + sin10 * cos30 + tan30 - deg2 + abs(-500) + lg50 - ln80 + rad18 * fac5 + √50*((-600)/6*10+13*∛(900)-3^6)/18+11'
+    res = '∛50 + sin10 * cos30 + tan30 - deg2 + abs(-500) + lg50 - ln80 + rad18 * fac5 + √50*((-600)/6*10+13*∛(900)-3^6)/18+11'
     print(calc.result(res))
 
