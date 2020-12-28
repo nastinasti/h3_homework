@@ -84,12 +84,14 @@ class Calc_UI(calc_tk.Canvas):
             self.result('<Return>')
         elif btn == "D":
             self._d_the_last('<BackSpace>')
+        elif btn == '\u03C0':
+            self.input_entry.insert(calc_tk.END, '3.14')
         else:
             self.input_entry.insert(calc_tk.END, str(btn))
 
     def result(self, event):
         self.output_entry.delete(0, calc_tk.END)
-        check_str = "%+-/*)(.0123456789√^"
+        check_str = "%+-/*)(.0123456789√^\u221B'sin''cos''tan''rad''deg''abs''lg''ln''fac'"
         input_string = str(self.input_entry.get()).replace(' ', '')
         for item in input_string:
             if item not in check_str or not self.calc_manage.result(input_string):
